@@ -43,4 +43,22 @@ class ProductRepository extends ServiceEntityRepository
 
         return $paginator;
     }
+
+    public function findByMpns($mpns): array
+    {
+        $mpns = $this->explodeMpns($mpns);
+
+        return $this->createQueryBuilder('p')
+            ->select('p')
+            ->where('p.mpn IN(:mpns)')
+            ->setParameter('mpns', $mpns)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    private function explodeMpns($mpns): array
+    {
+        return array_map('trim', explode(',', $mpns));
+    }
 }

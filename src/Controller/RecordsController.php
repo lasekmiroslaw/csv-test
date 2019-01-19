@@ -48,13 +48,20 @@ class RecordsController extends AbstractController
      */
     public function records(Request $request)
     {
+        $mpns = $request->query->get('mpn');
         $page = $request->query->get('page', 1);
-        $limit = self::RECORDS_PER_PAGE;
-        /**
-         * @var Paginator
-         */
-        $products = $this->productRepository->findAllProducts((int) $page, $limit);
-        $lastPage = ceil($products->count() / $limit);
+        $lastPage = 1;
+
+        if ($mpns) {
+            $products = $this->productRepository->findByMpns($mpns);
+        } else {
+            $limit = self::RECORDS_PER_PAGE;
+            /**
+             * @var Paginator
+             */
+            $products = $this->productRepository->findAllProducts((int) $page, $limit);
+            $lastPage = ceil($products->count() / $limit);
+        }
 
         return $this->render('records/records.html.twig', [
             'products' => $products,
