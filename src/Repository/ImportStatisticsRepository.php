@@ -20,4 +20,14 @@ class ImportStatisticsRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ImportStatistics::class);
     }
+
+    public function findLastImported(): ?ImportStatistics
+    {
+        return $this->createQueryBuilder('i')
+            ->orderBy('i.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }

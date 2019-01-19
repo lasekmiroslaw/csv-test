@@ -80,4 +80,9 @@ class ImportStatistics
 
         return $this;
     }
+
+    public function getImportedPercent(): float
+    {
+        return round((($this->importedRecords / $this->availableRecords) * 100), 2);
+    }
 }

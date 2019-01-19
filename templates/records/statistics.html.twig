@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Imports statistics{% endblock %}
+
+{% block body %}
+    <div>
+        <table class="table table-hover">
+            <tr>
+                <td>Last import date</td>
+                <td>{{ lastImported ? lastImported.createdAt|date('d.m.Y H:i')}}</td>
+            </tr>
+            <tr>
+                <td>Last import success</td>
+                <td>{{ lastImported ?lastImported.importedPercent }} %</td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}
