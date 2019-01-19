@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
@@ -20,21 +21,25 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=70)
+     * @Assert\NotBlank()
      */
     private $mpn;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(0)
      */
     private $qty;
 
     /**
      * @ORM\Column(type="smallint")
+     * @Assert\Regex("/\d{4}/")
      */
     private $manufactureYear;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @Assert\GreaterThan(0)
      */
     private $price;
 
