@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ImportStatistics;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Csv\Reader;
@@ -86,11 +87,19 @@ class CsvImportCommand extends Command
 
             $io->progressAdvance();
         }
+        $importStatistic = new ImportStatistics();
+        $importStatistic->setAvailableRecords($recordsCount);
+
+        $notImportedRecordsCount = count($invalidRecords);
+        $importedRecordsCount = ($recordsCount - $notImportedRecordsCount);
+        $importStatistic->setImportedRecords($importedRecordsCount);
+        $this->em->persist($importStatistic);
 
         $this->em->flush();
         $writer->insertAll($invalidRecords);
+
         $io->progressFinish();
-        $io->success('Records imported!');
+        $io->success("${importedRecordsCount} from ${recordsCount} records were imported!");
     }
 
     private function isCsvFile(string $path)
