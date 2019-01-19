@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Records list{% endblock %}
+
+{% block body %}
+    {% if products|length > 0 %}
+        <div>
+            <table class="table table-sm">
+                <thead>
+                <tr>
+                    <th>mpn</th>
+                    <th>quantity</th>
+                    <th>manufacture year</th>
+                    <th>price</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for product in products  %}
+                    <tr>
+                        <td>{{ product.mpn }}</td>
+                        <td>{{ product.qty }}</td>
+                        <td>{{ product.manufactureYear }}</td>
+                        <td>{{ product.price }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {%  if lastPage != 1 %}
+            <nav aria-label="...">
+                <ul class="pagination flex-wrap">
+                    <li class="page-item {{ page == 1? 'disabled' }}">
+                        <a class="page-link" href="{{ path('records', {'page': page - 1}) }}" tabindex="{{ page }}-1">Previous</a>
+                    </li>
+                    {% for i in 1..lastPage %}
+                        <li class="page-item {{ i == page? 'active' }}"><a class="page-link" href="{{ path('records', {'page': i}) }}">{{ i }}</a></li>
+                        {% if i % 20 == 0 %}
+                            <br>
+                        {% endif %}
+                    {% endfor %}
+                    <li class="page-item {{ page == lastPage? 'disabled' }}">
+                        <a class="page-link" href="{{ path('records', {'page': page + 1}) }}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div>
+            No results
+        </div>
+    {% endif %}
+{% endblock %}

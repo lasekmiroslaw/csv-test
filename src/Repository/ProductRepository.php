@@ -6,6 +6,8 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -19,5 +21,26 @@ class ProductRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Product::class);
+    }
+
+    public function findAllProducts(int $page = 1, int $limit = 25): Paginator
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        $paginator = $this->paginate($qb, $page, $limit);
+
+        return  $paginator;
+    }
+
+    public function paginate(QueryBuilder $qb, int $page, int $limit): Paginator
+    {
+        $paginator = new Paginator($qb, $page);
+        $offset = $limit * ($page - 1);
+
+        $paginator->getQuery()
+            ->setFirstResult($offset)
+            ->setMaxResults($limit);
+
+        return $paginator;
     }
 }
