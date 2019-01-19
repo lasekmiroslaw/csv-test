@@ -33,9 +33,11 @@ class ImportStatistics
      */
     private $importedRecords;
 
-    public function __construct()
+    public function __construct($availableRecords, $importedRecords)
     {
         $this->createdAt = new \DateTime();
+        $this->availableRecords = $availableRecords;
+        $this->importedRecords = $importedRecords;
     }
 
     public function getId(): ?int
