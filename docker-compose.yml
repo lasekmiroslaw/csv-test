@@ -1,0 +1,49 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: "3.1"
+services:
+
+    mysql:
+      image: mysql:5.7
+      container_name: csv-parser-mysql
+      working_dir: /application
+      volumes:
+        - .:/application
+        - ./data/mysql:/var/lib/mysql
+      environment:
+        - MYSQL_ROOT_PASSWORD=secret
+        - MYSQL_DATABASE=csv-parser
+        - MYSQL_USER=user
+        - MYSQL_PASSWORD=secret
+      ports:
+        - "8002:3306"
+
+    phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      links:
+        - mysql
+      environment:
+        PMA_HOST: mysql
+        PMA_PORT: 3306
+      ports:
+        - '8080:80'
+
+    webserver:
+      image: nginx:alpine
+      container_name: csv-parser-webserver
+      working_dir: /application
+      volumes:
+          - .:/application
+          - ./phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      ports:
+       - "8000:80"
+
+    php-fpm:
+      build: phpdocker/php-fpm
+      container_name: csv-parser-php-fpm
+      working_dir: /application
+      volumes:
+        - .:/application
+        - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.2/fpm/conf.d/99-overrides.ini
+
