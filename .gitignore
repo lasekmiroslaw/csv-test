@@ -1,0 +1,17 @@
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> ide ###
+/.idea/
+###> ide ###
+
+###> mysql data ###
+/data/
+###> mysql data ###
