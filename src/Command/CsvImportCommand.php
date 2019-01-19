@@ -7,6 +7,7 @@ namespace App\Command;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Csv\Reader;
+use League\Csv\Writer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -61,6 +62,10 @@ class CsvImportCommand extends Command
         $header = $reader->getHeader();
         $records = $reader->getRecords();
 
+        $writer = Writer::createFromPath('var/data/' . uniqid(date('d-m-Y_'), true) . '.csv', 'w+');
+        $writer->insertOne($header);
+        $invalidRecords = [];
+
         $recordsCount = iterator_count($records);
         $io->progressStart($recordsCount);
 
@@ -73,7 +78,9 @@ class CsvImportCommand extends Command
 
             $errors = $this->validator->validate($product);
 
-            if (count($errors) === 0) {
+            if (count($errors) > 0) {
+                $invalidRecords[] = $record;
+            } else {
                 $this->em->persist($product);
             }
 
@@ -81,6 +88,7 @@ class CsvImportCommand extends Command
         }
 
         $this->em->flush();
+        $writer->insertAll($invalidRecords);
         $io->progressFinish();
         $io->success('Records imported!');
     }
